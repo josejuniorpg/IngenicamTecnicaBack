@@ -1,15 +1,19 @@
-// Task interface
+export enum TaskStatus {
+    TODO = 1,
+    IN_PROGRESS = 2,
+    COMPLETED = 3
+}
+
 export interface Task {
     id: string;
     title: string;
     description: string;
-    completed: boolean;
+    status: TaskStatus;
 }
 
 // In-memory array to store tasks
 let tasks: Task[] = [];
 
-// ID counter
 let idCounter: number = 1;
 
 // Generate a new ID
@@ -17,7 +21,6 @@ const generateId = (): string => {
     return (idCounter++).toString();
 };
 
-// Task model with CRUD operations
 export const TaskModel = {
     getAllTasks: (): Task[] => {
         return tasks;
@@ -28,7 +31,7 @@ export const TaskModel = {
             id: generateId(),
             title,
             description,
-            completed: false
+            status: TaskStatus.TODO // Default status is TODO (1)
         };
         tasks.push(newTask);
         return newTask;
@@ -38,10 +41,10 @@ export const TaskModel = {
         return tasks.find(task => task.id === id);
     },
 
-    markTaskAsCompleted: (id: string): Task | null => {
+    updateTaskStatus: (id: string, status: TaskStatus): Task | null => {
         const taskIndex = tasks.findIndex(task => task.id === id);
         if (taskIndex !== -1) {
-            tasks[taskIndex].completed = true;
+            tasks[taskIndex].status = status;
             return tasks[taskIndex];
         }
         return null;
@@ -69,4 +72,5 @@ export const TaskModel = {
 
 // Add example tasks
 TaskModel.createTask("Buy milk", "Remember to get skim milk");
-TaskModel.createTask("Exercise", "30 minutes of cardio");
+const secondTask = TaskModel.createTask("Exercise", "30 minutes of cardio");
+TaskModel.updateTaskStatus(secondTask.id, TaskStatus.IN_PROGRESS);

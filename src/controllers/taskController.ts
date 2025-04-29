@@ -2,6 +2,18 @@ import {Request, Response} from 'express';
 import {TaskModel, TaskStatus} from "../models/Tasks";
 
 export const TaskController = {
+    getTaskById: (req: Request, res: Response): void => {
+        const {id} = req.params;
+        const task = TaskModel.getTaskById(id);
+
+        if (!task) {
+            res.status(404).json({error: 'Task not found'});
+            return;
+        }
+
+        res.status(200).json(task);
+    },
+
     getAllTasks: (req: Request, res: Response): void => {
         const tasks = TaskModel.getAllTasks();
         res.status(200).json(tasks);
